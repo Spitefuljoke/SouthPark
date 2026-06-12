@@ -1,0 +1,29 @@
+name: Daily South Park Quote
+
+on:
+  schedule:
+    # Moscow is 15:00 UTC (UTC+3)
+    - cron: '0 15 * * *'
+  workflow_dispatch:
+
+jobs:
+  send-quote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install requests vk_api
+
+      - name: Run bot script
+        env:
+          VK_TOKEN: ${{ secrets.VK_TOKEN }}
+          PEER_ID: ${{ secrets.PEER_ID }}
+        run: python send_quote.py
